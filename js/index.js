@@ -43,6 +43,13 @@ const libros = [{
 //Tu codigo JS va acá
 
 
+const filtrarAutor = (arrayLibros, nombreAutor)  =>{
+    return arrayLibros.filter(libro => libro.autor === nombreAutor) ;
+};
+
+
+
+
 
 
 
