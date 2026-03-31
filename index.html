@@ -1,43 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSS BOOTSTRAP -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <!-- CSS BOOTSTRAP -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { background-color: #f8f9fa; }
+
+    .card:hover {
+      transform: scale(1.03);
+      transition: 0.3s ease;
+    }
+  </style>
 </head>
+
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-dark bg-primary">
-        <div class="container-fluid">
-            <p class="h2 text-light">Libreria La lectora</p>
-          <div>
-            <p class="h4 text-light">Categoria</p>
-            <div>
-              <label for="autor" class="h6 text-light">Autor</label>
-              <!-- lista desplegable de los autores -->
-              <select id="autor" class="custom-select">
-                <option value="" disabled selected>---</option>
-                <option value="Gabriel Garcia Marquez">Gabriel Garcia Marquez</option>
-                <option value="William Golding">William Golding</option>
-                <option value="Julio Verne">Julio Verne</option>
-                <option value="Miguel de Cervantes">Miguel de Cervantes</option>
-                <option value="Herman Melville">Herman Melville</option>
-                <option value="Ernest Hemingway">Ernest Hemingway</option>
-              </select>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+
+    <a class="navbar-brand fw-bold" href="#">Libreria La Lectora</a>
+
+    <div class="d-flex align-items-center gap-2">
+      <select id="autor" class="form-select">
+        <option value="" selected>Seleccionar autor</option>
+        <option>Gabriel Garcia Marquez</option>
+        <option>William Golding</option>
+        <option>Julio Verne</option>
+        <option>Miguel de Cervantes</option>
+        <option>Herman Melville</option>
+        <option>Ernest Hemingway</option>
+      </select>
+    </div>
+
+  </div>
+</nav>
+
+<!-- CONTENIDO -->
+<div class="container mt-5">
+
+  <!-- LOADING -->
+  <div id="loading" class="text-center d-none">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div id="libros" class="row g-4"></div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalLibro" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitulo"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalContenido"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const libros = [
+  { titulo: "Cien años de seriedad", autor: "Gabriel Garcia Marquez", desc: "Una obra maestra del realismo mágico." },
+  { titulo: "El amor en los tiempos del cólera", autor: "Gabriel Garcia Marquez", desc: "Historia de amor duradera." },
+  { titulo: "El señor de las moscas", autor: "William Golding", desc: "Supervivencia y naturaleza humana." },
+  { titulo: "Viaje al centro de la Tierra", autor: "Julio Verne", desc: "Aventura científica." },
+  { titulo: "Don Quijote", autor: "Miguel de Cervantes", desc: "Clásico de la literatura." },
+  { titulo: "Moby Dick", autor: "Herman Melville", desc: "Mueve el pene." },
+  { titulo: "El viejo y el mar", autor: "Ernest Hemingway", desc: "Lucha y perseverancia." }
+];
+
+const select = document.getElementById('autor');
+const contenedor = document.getElementById('libros');
+const loading = document.getElementById('loading');
+
+select.addEventListener('change', () => {
+  const autor = select.value;
+
+  contenedor.innerHTML = '';
+  loading.classList.remove('d-none');
+
+  setTimeout(() => {
+    const filtrados = libros.filter(l => l.autor === autor);
+
+    loading.classList.add('d-none');
+
+    if (filtrados.length === 0) {
+      contenedor.innerHTML = '<p class="text-center text-muted">No se encontraron libros</p>';
+      return;
+    }
+
+    filtrados.forEach(libro => {
+      contenedor.innerHTML += `
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">${libro.titulo}</h5>
+              <p class="card-text">${libro.autor}</p>
+              <button class="btn btn-primary" onclick="verMas('${libro.titulo}', '${libro.desc}')">Ver más</button>
             </div>
           </div>
         </div>
-      </nav>
+      `;
+    });
 
-      <!-- Setear el resultado de la busqueda acá -->
-    <div id="libros" class="container mx-5 px-5 d-flex flex-column align-items-center mt-5"></div>
+  }, 800);
+});
 
+function verMas(titulo, desc) {
+  document.getElementById('modalTitulo').innerText = titulo;
+  document.getElementById('modalContenido').innerText = desc;
 
+  const modal = new bootstrap.Modal(document.getElementById('modalLibro'));
+  modal.show();
+}
+</script>
 
-    <script src="./js/index.js"></script>
 </body>
 </html>
